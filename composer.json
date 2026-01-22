@@ -1,0 +1,48 @@
+{
+    "name": "erdmannfreunde/contao-status-update-bundle",
+    "description": "Status-Updates Bundle for Contao - Display important status updates in the backend dashboard",
+    "keywords": ["contao", "status", "updates", "backend", "dashboard", "notifications"],
+    "type": "contao-bundle",
+    "license": "LGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Erdmann & Freunde",
+            "homepage": "https://erdmann-freunde.de"
+        }
+    ],
+    "homepage": "https://github.com/erdmannfreunde/contao-status-update-bundle",
+    "support": {
+        "issues": "https://github.com/erdmannfreunde/contao-status-update-bundle/issues",
+        "source": "https://github.com/erdmannfreunde/contao-status-update-bundle"
+    },
+    "require": {
+        "php": "^8.2",
+        "contao/core-bundle": "^5.3",
+        "symfony/config": "^6.4 || ^7.0",
+        "symfony/dependency-injection": "^6.4 || ^7.0",
+        "symfony/http-kernel": "^6.4 || ^7.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.3"
+    },
+    "conflict": {
+        "contao/core": "*",
+        "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ErdmannFreunde\\ContaoStatusUpdateBundle\\": "src/"
+        },
+        "classmap": [
+            "contao/"
+        ],
+        "exclude-from-classmap": [
+            "contao/config/",
+            "contao/dca/",
+            "contao/languages/"
+        ]
+    },
+    "extra": {
+        "contao-manager-plugin": "ErdmannFreunde\\ContaoStatusUpdateBundle\\ContaoManager\\Plugin"
+    }
+}

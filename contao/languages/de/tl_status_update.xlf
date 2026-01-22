@@ -1,0 +1,103 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_status_update.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="tl_status_update.title_legend">
+        <source>Title and description</source>
+        <target>Titel und Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.date_legend">
+        <source>Date and visibility</source>
+        <target>Datum und Sichtbarkeit</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.publish_legend">
+        <source>Publish settings</source>
+        <target>Veröffentlichung</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.title.0">
+        <source>Title</source>
+        <target>Titel</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.title.1">
+        <source>Please enter the title of the status update.</source>
+        <target>Bitte geben Sie den Titel des Status-Updates ein.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.description.0">
+        <source>Description</source>
+        <target>Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.description.1">
+        <source>Enter a detailed description for this status update.</source>
+        <target>Geben Sie eine detaillierte Beschreibung für dieses Status-Update ein.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.date.0">
+        <source>Event date</source>
+        <target>Datum</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.date.1">
+        <source>Select the date for this status update.</source>
+        <target>Wählen Sie das Datum für dieses Status-Update.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.show_days_before.0">
+        <source>Show notification before event</source>
+        <target>Hinweis vorab anzeigen</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.show_days_before.1">
+        <source>How many days before the event should the notification be displayed?</source>
+        <target>Wie viele Tage vor dem Ereignis soll der Hinweis angezeigt werden?</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.show_days_after.0">
+        <source>Show notification after event</source>
+        <target>Hinweis danach anzeigen</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.show_days_after.1">
+        <source>How many days after the event should the notification be displayed?</source>
+        <target>Wie viele Tage nach dem Ereignis soll der Hinweis angezeigt werden?</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.published.0">
+        <source>Published</source>
+        <target>Veröffentlicht</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.published.1">
+        <source>Make this status update visible in the backend.</source>
+        <target>Dieses Status-Update im Backend sichtbar machen.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.show_days_before_options.7_days">
+        <source>7 days before</source>
+        <target>7 Tage vorher</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.show_days_before_options.10_days">
+        <source>10 days before</source>
+        <target>10 Tage vorher</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.show_days_before_options.30_days">
+        <source>30 days before</source>
+        <target>30 Tage vorher</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.show_days_before_options.only_on_event_day">
+        <source>Only on event day</source>
+        <target>Nur am Tag des Ereignisses</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.show_days_after_options.only_on_event_day">
+        <source>Only on event day</source>
+        <target>Nur am Tag des Ereignisses</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.show_days_after_options.1_day">
+        <source>1 day after</source>
+        <target>1 Tag danach</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.show_days_after_options.7_days">
+        <source>7 days after</source>
+        <target>7 Tage danach</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

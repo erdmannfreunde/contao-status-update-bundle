@@ -1,0 +1,14 @@
+services:
+    _defaults:
+        autoconfigure: true
+
+    _instanceof:
+        Contao\CoreBundle\Framework\FrameworkAwareInterface:
+            calls:
+                - [setFramework, ['@contao.framework']]
+
+    ErdmannFreunde\ContaoStatusUpdateBundle\EventListener\StatusUpdateSystemMessageListener:
+        arguments:
+            - '@contao.framework'
+            - '@database_connection'
+            - '@translator'
