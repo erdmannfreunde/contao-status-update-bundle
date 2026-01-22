@@ -30,7 +30,7 @@ vendor/bin/contao-console contao:migrate
 
 ### Status-Updates erstellen
 
-1. Navigiere zu **Backend → Inhalte → Status-Updates**
+1. Navigiere zu **Backend → System → Status-Updates**
 2. Klicke auf "Neu", um ein Status-Update zu erstellen
 3. Fülle die Felder aus:
 

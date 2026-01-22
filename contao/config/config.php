@@ -3,7 +3,7 @@
 use ErdmannFreunde\ContaoStatusUpdateBundle\Model\StatusUpdateModel;
 
 // Backend module
-$GLOBALS['BE_MOD']['content']['status_updates'] = [
+$GLOBALS['BE_MOD']['system']['status_updates'] = [
     'tables' => ['tl_status_update'],
 ];
 
