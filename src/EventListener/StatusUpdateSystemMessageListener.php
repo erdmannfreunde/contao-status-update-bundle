@@ -35,7 +35,7 @@ class StatusUpdateSystemMessageListener
 
         // Query status updates with visibility calculation
         $updates = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_status_update WHERE published = 1 ORDER BY date DESC'
+            'SELECT * FROM tl_status_update WHERE published = 1 ORDER BY date ASC'
         );
 
         $messages = [];
@@ -96,23 +96,23 @@ class StatusUpdateSystemMessageListener
         $formattedDate = date('d.m.Y', $eventDate);
 
         // Determine message type based on timing
-        $messageClass = 'tl_info';
+        $statusType = 'info';
         $daysDiff = (int) (($eventDate - $currentDate) / 86400);
 
         if ($daysDiff < 0) {
-            $messageClass = 'tl_confirm'; // Past event - green
+            $statusType = 'success'; // Past event - green
         } elseif ($daysDiff === 0) {
-            $messageClass = 'tl_error'; // Today - red/important
+            $statusType = 'error'; // Today - red/important
         } elseif ($daysDiff <= 3) {
-            $messageClass = 'tl_new'; // Soon - yellow/warning
+            $statusType = 'warning'; // Soon - yellow/warning
         }
 
         $html = sprintf(
-            '<div class="%s"><p><strong>%s: %s</strong></p>%s</div>',
-            $messageClass,
+            '<div class="system-message-status-update %s"><div class="system-message-status-update-title">%s: %s</div>%s</div>',
+            $statusType,
             $formattedDate,
             $title,
-            $description ? '<div>' . $description . '</div>' : ''
+            $description ? '<div class="system-message-status-update-content">' . $description . '</div>' : ''
         );
 
         return $html;

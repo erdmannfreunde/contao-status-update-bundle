@@ -52,6 +52,8 @@ vendor/bin/contao-console contao:migrate
 
 ### Dashboard-Anzeige
 
+![Contao Status-Updates Dashboard](docs/status-update-backend.png)
+
 Status-Updates erscheinen automatisch im Backend-Dashboard basierend auf den Sichtbarkeitsregeln:
 
 - **Rot/Wichtig**: Ereignisse, die heute stattfinden

@@ -1,0 +1,119 @@
+/**
+ * Backend CSS for Status Update System Messages
+ * Styles the system messages displayed in the Contao backend dashboard
+ */
+
+/* System Message Container */
+.system-message-status-update {
+  margin: 15px 0;
+  padding: 15px 15px 2px;
+  border-left: 4px solid #3aa0d5;
+  background-color: #f5f9fc;
+  border-radius: 3px;
+}
+
+/* Status Update Message Variants */
+.system-message-status-update.info {
+  border-left-color: #3aa0d5;
+  background-color: #f5f9fc;
+}
+
+.system-message-status-update.success {
+  border-left-color: #6cc24a;
+  background-color: #f1f8f0;
+}
+
+.system-message-status-update.warning {
+  border-left-color: #fdb913;
+  background-color: #fffaf0;
+}
+
+.system-message-status-update.error {
+  border-left-color: #ea5c5c;
+  background-color: #fff0f0;
+}
+
+/* Message Title */
+.system-message-status-update-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+}
+
+.system-message-status-update.info .system-message-status-update-title {
+  color: #0066a1;
+}
+
+.system-message-status-update.success .system-message-status-update-title {
+  color: #4a7a2a;
+}
+
+.system-message-status-update.warning .system-message-status-update-title {
+  color: #b39e00;
+}
+
+.system-message-status-update.error .system-message-status-update-title {
+  color: #c1313d;
+}
+
+/* Message Content */
+.system-message-status-update-content {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #404040;
+}
+
+.system-message-status-update.info .system-message-status-update-content {
+  color: #1a2332;
+}
+
+.system-message-status-update.success .system-message-status-update-content {
+  color: #2c4a1a;
+}
+
+.system-message-status-update.warning .system-message-status-update-content {
+  color: #664400;
+}
+
+.system-message-status-update.error .system-message-status-update-content {
+  color: #7a1a25;
+}
+
+/* Icon for Status Updates */
+.system-message-status-update-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Multiple Messages Stack */
+.system-messages-status-update-group {
+  margin: 20px 0;
+}
+
+.system-messages-status-update-group .system-message-status-update {
+  margin-bottom: 10px;
+}
+
+.system-messages-status-update-group .system-message-status-update:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .system-message-status-update {
+    padding: 12px;
+    margin: 10px 0;
+  }
+
+  .system-message-status-update-title {
+    font-size: 13px;
+  }
+
+  .system-message-status-update-content {
+    font-size: 12px;
+  }
+}
