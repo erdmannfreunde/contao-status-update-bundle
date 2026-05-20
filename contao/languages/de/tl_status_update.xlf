@@ -69,6 +69,24 @@
         <target>Dieses Status-Update im Backend sichtbar machen.</target>
       </trans-unit>
 
+      <trans-unit id="tl_status_update.completed.0">
+        <source>Completed</source>
+        <target>Abgeschlossen</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.completed.1">
+        <source>Mark this status update as completed. It will be displayed in green with a checkmark icon.</source>
+        <target>Dieses Status-Update als abgeschlossen markieren. Es wird grün mit einem Häkchen-Symbol angezeigt.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.toggleCompleted.0">
+        <source>Toggle completed state</source>
+        <target>Abschluss umschalten</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.toggleCompleted.1">
+        <source>Toggle the completed state of status update ID %s</source>
+        <target>Abschluss-Status von Status-Update ID %s umschalten</target>
+      </trans-unit>
+
       <trans-unit id="tl_status_update.show_days_before_options.7_days">
         <source>7 days before</source>
         <target>7 Tage vorher</target>

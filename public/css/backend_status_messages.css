@@ -33,6 +33,26 @@
   background-color: #fff0f0;
 }
 
+/* Completed: green status with checkmark background icon on the right */
+.system-message-status-update.completed {
+  position: relative;
+  border-left-color: #6cc24a;
+  background-color: #f1f8f0;
+  padding-right: 150px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236cc24a' stroke-opacity='0.5' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9.5'/><polyline points='7.5 12.5 10.5 15.5 16.5 9.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right -15px bottom -15px;
+  background-size: 120px 120px;
+}
+
+.system-message-status-update.completed .system-message-status-update-title {
+  color: #4a7a2a;
+}
+
+.system-message-status-update.completed .system-message-status-update-content {
+  color: #2c4a1a;
+}
+
 /* Message Title */
 .system-message-status-update-title {
   font-weight: 600;

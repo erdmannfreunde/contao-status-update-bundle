@@ -95,11 +95,15 @@ class StatusUpdateSystemMessageListener
         $description = $update['description'] ?? '';
         $formattedDate = date('d.m.Y', $eventDate);
 
+        $isCompleted = !empty($update['completed']);
+
         // Determine message type based on timing
         $statusType = 'info';
         $daysDiff = (int) (($eventDate - $currentDate) / 86400);
 
-        if ($daysDiff < 0) {
+        if ($isCompleted) {
+            $statusType = 'success'; // Completed - green
+        } elseif ($daysDiff < 0) {
             $statusType = 'success'; // Past event - green
         } elseif ($daysDiff === 0) {
             $statusType = 'error'; // Today - red/important
@@ -107,9 +111,14 @@ class StatusUpdateSystemMessageListener
             $statusType = 'warning'; // Soon - yellow/warning
         }
 
+        $classes = 'system-message-status-update ' . $statusType;
+        if ($isCompleted) {
+            $classes .= ' completed';
+        }
+
         $html = sprintf(
-            '<div class="system-message-status-update %s"><div class="system-message-status-update-title">%s: %s</div>%s</div>',
-            $statusType,
+            '<div class="%s"><div class="system-message-status-update-title">%s: %s</div>%s</div>',
+            $classes,
             $formattedDate,
             $title,
             $description ? '<div class="system-message-status-update-content">' . $description . '</div>' : ''

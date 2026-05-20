@@ -3,6 +3,8 @@
 use Contao\Backend;
 use Contao\DataContainer;
 use Contao\DC_Table;
+use Contao\Image;
+use Contao\StringUtil;
 
 $GLOBALS['TL_DCA']['tl_status_update'] = [
     // Config
@@ -51,6 +53,12 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
                 'icon' => 'visible.svg',
                 'showInHeader' => true,
             ],
+            'toggleCompleted' => [
+                'href' => 'act=toggle&amp;field=completed',
+                'icon' => 'bundles/erdmannfreundecontaostatusupdate/icons/completed.svg',
+                'showInHeader' => true,
+                'button_callback' => ['tl_status_update', 'toggleCompletedIcon'],
+            ],
             'show' => [
                 'href' => 'act=show',
                 'icon' => 'show.svg',
@@ -60,7 +68,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{title_legend},title,description;{date_legend},date,show_days_before,show_days_after;{publish_legend},published',
+        'default' => '{title_legend},title,description;{date_legend},date,show_days_before,show_days_after;{publish_legend},published,completed',
     ],
 
     // Fields
@@ -127,7 +135,16 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'toggle' => true,
             'filter' => true,
             'inputType' => 'checkbox',
-            'eval' => ['doNotCopy' => true],
+            'eval' => ['doNotCopy' => true, 'tl_class' => 'w50 m12'],
+            'sql' => ['type' => 'boolean', 'default' => false],
+        ],
+        'completed' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_status_update']['completed'],
+            'exclude' => true,
+            'toggle' => true,
+            'filter' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['doNotCopy' => true, 'tl_class' => 'w50 m12'],
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
     ],
@@ -148,7 +165,9 @@ class tl_status_update extends Backend
         $eventDate = (int) $row['date'];
 
         $colorClass = '';
-        if ($eventDate < $today) {
+        if (!empty($row['completed'])) {
+            $colorClass = 'style="color: #6cc24a;"'; // Completed - green
+        } elseif ($eventDate < $today) {
             $colorClass = 'style="color: #999;"'; // Past - gray
         } elseif ($eventDate === $today) {
             $colorClass = 'style="color: #c33;"'; // Today - red
@@ -161,6 +180,26 @@ class tl_status_update extends Backend
             $row['title'],
             $colorClass,
             $datum
+        );
+    }
+
+    /**
+     * Render the "completed" toggle button with bundle asset icons.
+     * Mirrors the Contao core "featured" pattern so the button is rendered
+     * with a working <img> even when the icon comes from a bundle asset path.
+     */
+    public function toggleCompletedIcon(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
+    {
+        $iconOn = 'bundles/erdmannfreundecontaostatusupdate/icons/completed.svg';
+        $iconOff = 'bundles/erdmannfreundecontaostatusupdate/icons/completed_.svg';
+        $current = !empty($row['completed']) ? $iconOn : $iconOff;
+
+        return sprintf(
+            '<a href="%s" title="%s"%s>%s</a> ',
+            Backend::addToUrl($href . '&amp;id=' . $row['id']),
+            StringUtil::specialchars($title),
+            $attributes,
+            Image::getHtml($current, $label, 'data-icon="' . $iconOn . '" data-icon-disabled="' . $iconOff . '" data-state="' . (!empty($row['completed']) ? 1 : 0) . '"')
         );
     }
 }
