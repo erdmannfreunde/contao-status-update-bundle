@@ -29,6 +29,18 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'flag' => DataContainer::SORT_DAY_DESC,
             'panelLayout' => 'filter;sort,search,limit',
         ],
+        'global_operations' => [
+            'settings' => [
+                'href' => 'table=tl_status_update_settings&amp;act=edit&amp;id=1',
+                'class' => 'header_icon',
+                'icon' => 'bundles/erdmannfreundecontaostatusupdate/icons/settings.svg',
+            ],
+            'all' => [
+                'href' => 'act=select',
+                'class' => 'header_edit_all',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+            ],
+        ],
         'label' => [
             'fields' => ['title', 'date'],
             'format' => '%s <span class="label-info">[%s]</span>',
@@ -145,6 +157,9 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true, 'tl_class' => 'w50 m12'],
+            'sql' => ['type' => 'boolean', 'default' => false],
+        ],
+        'notification_sent' => [
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
     ],

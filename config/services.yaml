@@ -12,3 +12,17 @@ services:
             - '@contao.framework'
             - '@database_connection'
             - '@translator'
+
+    ErdmannFreunde\ContaoStatusUpdateBundle\Mailer\NotificationMailer:
+        arguments:
+            - '@database_connection'
+            - '@mailer'
+            - '@contao.insert_tag.parser'
+            - '@security.helper'
+            - '@contao.framework'
+            - '@translator'
+
+    ErdmannFreunde\ContaoStatusUpdateBundle\EventListener\SendCompletionMailListener:
+        arguments:
+            - '@database_connection'
+            - '@ErdmannFreunde\ContaoStatusUpdateBundle\Mailer\NotificationMailer'

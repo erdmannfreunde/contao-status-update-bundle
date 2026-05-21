@@ -8,9 +8,10 @@ Zeige wichtige Status-Updates wie anstehende Contao Updates im Contao Backend-Da
 - **Datumsbasierte Sichtbarkeit**: Steuere, wann Updates erscheinen (X Tage vor/nach einem Ereignis)
 - **Rich-Text-Editor**: TinyMCE-Integration für detaillierte Beschreibungen
 - **Dashboard-Widget**: Automatische Anzeige im Backend basierend auf Sichtbarkeitsregeln
-- **Mehrsprachig**: Deutsche und englische Übersetzungen enthalten
 - **Flexible Anzeigeregeln**: Konfiguriere, wie lange Updates sichtbar bleiben
 - **Farbcodierte Anzeige**: Visuelle Indikatoren für bevorstehende, aktuelle und vergangene Ereignisse
+- **Abgeschlossen-Status**: Markiere Updates als erledigt – das Dashboard zeigt sie dann grün mit einem Häkchen-Hintergrund-Icon
+- **E-Mail-Benachrichtigung**: Sende beim Abschließen eines Updates automatisch eine Mail an ausgewählte Backend-Benutzer (siehe Abschnitt "Benachrichtigungen")
 
 ## Installation
 
@@ -18,12 +19,6 @@ Installation über Composer:
 
 ```bash
 composer require erdmannfreunde/contao-status-update-bundle
-```
-
-Nach der Installation führe das Contao-Installtool oder den Migrate-Befehl aus:
-
-```bash
-vendor/bin/contao-console contao:migrate
 ```
 
 ## Verwendung
@@ -47,6 +42,7 @@ vendor/bin/contao-console contao:migrate
   - 1 Tag danach
   - 7 Tage danach
 - **Veröffentlicht**: Aktivieren, um im Dashboard sichtbar zu machen
+- **Abgeschlossen**: Markiert das Update als erledigt. Im Dashboard wird es dann grün dargestellt und erhält ein dezentes Häkchen-Icon im Hintergrund. Lässt sich auch direkt aus der Übersicht über das Checkbox-Icon umschalten.
 
 4. Speichere das Status-Update
 
@@ -59,7 +55,7 @@ Status-Updates erscheinen automatisch im Backend-Dashboard basierend auf den Sic
 - **Rot/Wichtig**: Ereignisse, die heute stattfinden
 - **Gelb/Warnung**: Ereignisse innerhalb der nächsten 3 Tage
 - **Blau/Info**: Zukünftige Ereignisse
-- **Grün/Erfolg**: Vergangene Ereignisse (innerhalb der "Danach"-Anzeigedauer)
+- **Grün/Erfolg**: Vergangene Ereignisse (innerhalb der "Danach"-Anzeigedauer) sowie als **abgeschlossen** markierte Updates (zusätzlich mit Häkchen-Hintergrund-Icon)
 
 ## Sichtbarkeitslogik
 
@@ -74,15 +70,34 @@ Beispiel: Wenn du "7 Tage vorher" und "1 Tag danach" für ein Ereignis am 15. Ja
 - Das Status-Update wird ab dem 8. Januar angezeigt
 - Das Status-Update wird nach dem 16. Januar nicht mehr angezeigt
 
+## Benachrichtigungen
+
+Beim Markieren eines Status-Updates als **abgeschlossen** kann das Bundle automatisch eine E-Mail an ausgewählte Backend-Benutzer versenden.
+
+### Einrichtung
+
+Die Einstellungen sind über das Zahnrad-Icon oben rechts in der Status-Updates-Übersicht erreichbar (keine eigener Sidebar-Menüpunkt).
+
+Verfügbare Felder:
+
+- **E-Mail-Benachrichtigung aktivieren**: Master-Schalter. Wenn aus, wird nichts versendet.
+- **Betreff**: Betreff der Mail. Unterstützt die Platzhalter `##title##`, `##date##`, `##description##`.
+- **Nachricht**: HTML-Body der Mail (TinyMCE). Unterstützt dieselben Platzhalter sowie Contao-Insert-Tags.
+- **Empfänger**: Mehrfach-Auswahl aller Backend-Benutzer. Der aktuell angemeldete Benutzer wird **immer automatisch** ergänzt – auch wenn niemand sonst angehakt ist.
+
+### Verhalten
+
+- Der Versand läuft pro Status-Update **genau einmal** (Flag `notification_sent`). Auch wenn der Status zwischendurch wieder geöffnet und erneut abgeschlossen wird, geht keine zweite Mail raus.
+- Der Versand erfolgt über die in Contao konfigurierte Standard-Versandart (Symfony `MailerInterface`, gesteuert über `MAILER_DSN`).
+- Als Absenderadresse wird die unter „System → Einstellungen → Administrator-E-Mail-Adresse" hinterlegte Adresse verwendet.
+- Backend-Benutzer ohne hinterlegte E-Mail-Adresse oder mit ungültiger Adresse werden übersprungen.
+- Insert-Tags in den Settings (z.B. `{{date}}`) werden ausgewertet; Insert-Tags in nutzergenerierten Status-Update-Feldern (Titel/Beschreibung) werden bewusst **nicht** ausgewertet, um eine Insert-Tag-Injection durch Editoren mit eingeschränkten Rechten zu verhindern.
+
 ## Anforderungen
 
 - PHP 8.2 oder höher
 - Contao 5.3 oder höher
 - Symfony 6.4 oder 7.0
-
-## Konfiguration
-
-Keine zusätzliche Konfiguration erforderlich. Das Bundle funktioniert nach der Installation sofort.
 
 ## Lizenz
 

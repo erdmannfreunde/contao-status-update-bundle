@@ -87,6 +87,15 @@
         <target>Abschluss-Status von Status-Update ID %s umschalten</target>
       </trans-unit>
 
+      <trans-unit id="tl_status_update.settings.0">
+        <source>Settings</source>
+        <target>Einstellungen</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.settings.1">
+        <source>Edit the status update settings</source>
+        <target>Einstellungen der Status-Updates bearbeiten</target>
+      </trans-unit>
+
       <trans-unit id="tl_status_update.show_days_before_options.7_days">
         <source>7 days before</source>
         <target>7 Tage vorher</target>

@@ -2,14 +2,16 @@
 
 use Contao\System;
 use ErdmannFreunde\ContaoStatusUpdateBundle\Model\StatusUpdateModel;
+use ErdmannFreunde\ContaoStatusUpdateBundle\Model\StatusUpdateSettingsModel;
 
 // Backend module
 $GLOBALS['BE_MOD']['system']['status_updates'] = [
-    'tables' => ['tl_status_update'],
+    'tables' => ['tl_status_update', 'tl_status_update_settings'],
 ];
 
-// Model
+// Models
 $GLOBALS['TL_MODELS']['tl_status_update'] = StatusUpdateModel::class;
+$GLOBALS['TL_MODELS']['tl_status_update_settings'] = StatusUpdateSettingsModel::class;
 
 // Backend CSS (nur im Backend laden)
 $request = System::getContainer()->get('request_stack')->getCurrentRequest();

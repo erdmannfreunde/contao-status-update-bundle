@@ -68,6 +68,13 @@
         <source>Toggle the completed state of status update ID %s</source>
       </trans-unit>
 
+      <trans-unit id="tl_status_update.settings.0">
+        <source>Settings</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.settings.1">
+        <source>Edit the status update settings</source>
+      </trans-unit>
+
       <trans-unit id="tl_status_update.show_days_before_options.7_days">
         <source>7 days before</source>
       </trans-unit>
