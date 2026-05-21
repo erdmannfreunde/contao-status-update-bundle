@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_status_update_settings.php" source-language="en">
+    <body>
+      <trans-unit id="tl_status_update_settings.notification_legend">
+        <source>Notification</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.message_legend">
+        <source>E-mail content</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.recipients_legend">
+        <source>Recipients</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.enable_notifications.0">
+        <source>Enable e-mail notifications</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.enable_notifications.1">
+        <source>Send an e-mail automatically when a status update is marked as completed.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_subject.0">
+        <source>Subject</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.notification_subject.1">
+        <source>Subject of the e-mail. Tokens ##title##, ##date##, ##description## are supported.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_body.0">
+        <source>Message</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.notification_body.1">
+        <source>Body of the e-mail. Tokens ##title##, ##date##, ##description## and Contao insert tags are supported.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_recipients.0">
+        <source>Recipients</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.notification_recipients.1">
+        <source>Select all backend users who should receive the notification. The currently logged-in user is always added automatically.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_subject_default">
+        <source>Status update completed: %title%</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

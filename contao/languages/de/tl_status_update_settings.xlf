@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_status_update_settings.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="tl_status_update_settings.notification_legend">
+        <source>Notification</source>
+        <target>Benachrichtigung</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.message_legend">
+        <source>E-mail content</source>
+        <target>E-Mail-Inhalt</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.recipients_legend">
+        <source>Recipients</source>
+        <target>Empfänger</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.enable_notifications.0">
+        <source>Enable e-mail notifications</source>
+        <target>E-Mail-Benachrichtigung aktivieren</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.enable_notifications.1">
+        <source>Send an e-mail automatically when a status update is marked as completed.</source>
+        <target>Beim Markieren eines Status-Updates als abgeschlossen automatisch eine E-Mail versenden.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_subject.0">
+        <source>Subject</source>
+        <target>Betreff</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.notification_subject.1">
+        <source>Subject of the e-mail. Tokens ##title##, ##date##, ##description## are supported.</source>
+        <target>Betreff der E-Mail. Platzhalter ##title##, ##date##, ##description## werden ersetzt.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_body.0">
+        <source>Message</source>
+        <target>Nachricht</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.notification_body.1">
+        <source>Body of the e-mail. Tokens ##title##, ##date##, ##description## and Contao insert tags are supported.</source>
+        <target>Inhalt der E-Mail. Platzhalter ##title##, ##date##, ##description## sowie Contao-Insert-Tags werden unterstützt.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_recipients.0">
+        <source>Recipients</source>
+        <target>Empfänger</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update_settings.notification_recipients.1">
+        <source>Select all backend users who should receive the notification. The currently logged-in user is always added automatically.</source>
+        <target>Wählen Sie alle Backend-Benutzer aus, die benachrichtigt werden sollen. Der aktuell angemeldete Benutzer wird automatisch ergänzt.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update_settings.notification_subject_default">
+        <source>Status update completed: %title%</source>
+        <target>Status-Update abgeschlossen: %title%</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
