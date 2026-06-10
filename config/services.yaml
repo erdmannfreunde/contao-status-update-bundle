@@ -1,5 +1,6 @@
 services:
     _defaults:
+        autowire: true
         autoconfigure: true
 
     _instanceof:
@@ -7,22 +8,8 @@ services:
             calls:
                 - [setFramework, ['@contao.framework']]
 
-    ErdmannFreunde\ContaoStatusUpdateBundle\EventListener\StatusUpdateSystemMessageListener:
-        arguments:
-            - '@contao.framework'
-            - '@database_connection'
-            - '@translator'
-
-    ErdmannFreunde\ContaoStatusUpdateBundle\Mailer\NotificationMailer:
-        arguments:
-            - '@database_connection'
-            - '@mailer'
-            - '@contao.insert_tag.parser'
-            - '@security.helper'
-            - '@contao.framework'
-            - '@translator'
-
-    ErdmannFreunde\ContaoStatusUpdateBundle\EventListener\SendCompletionMailListener:
-        arguments:
-            - '@database_connection'
-            - '@ErdmannFreunde\ContaoStatusUpdateBundle\Mailer\NotificationMailer'
+    ErdmannFreunde\ContaoStatusUpdateBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/{DependencyInjection,Model}'
+            - '../src/ErdmannFreundeContaoStatusUpdateBundle.php'

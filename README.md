@@ -12,6 +12,7 @@ Zeige wichtige Status-Updates wie anstehende Contao Updates im Contao Backend-Da
 - **Farbcodierte Anzeige**: Visuelle Indikatoren für bevorstehende, aktuelle und vergangene Ereignisse
 - **Abgeschlossen-Status**: Markiere Updates als erledigt – das Dashboard zeigt sie dann grün mit einem Häkchen-Hintergrund-Icon
 - **E-Mail-Benachrichtigung**: Sende beim Abschließen eines Updates automatisch eine Mail an ausgewählte Backend-Benutzer (siehe Abschnitt "Benachrichtigungen")
+- **Frontend-Anzeige**: Zeige Status-Updates auch im Frontend an – z.B. Urlaubshinweise mit Zeitraum, Wartungsfenster oder Marketing-Aktionen mit Rabattcode (siehe Abschnitt "Frontend-Anzeige")
 
 ## Installation
 
@@ -92,6 +93,67 @@ Verfügbare Felder:
 - Als Absenderadresse wird die unter „System → Einstellungen → Administrator-E-Mail-Adresse" hinterlegte Adresse verwendet.
 - Backend-Benutzer ohne hinterlegte E-Mail-Adresse oder mit ungültiger Adresse werden übersprungen.
 - Insert-Tags in den Settings (z.B. `{{date}}`) werden ausgewertet; Insert-Tags in nutzergenerierten Status-Update-Feldern (Titel/Beschreibung) werden bewusst **nicht** ausgewertet, um eine Insert-Tag-Injection durch Editoren mit eingeschränkten Rechten zu verhindern.
+
+## Frontend-Anzeige
+
+Status-Updates können auch im Frontend ausgegeben werden – z.B. für:
+
+- Urlaubs- oder Abwesenheitshinweise mit konkretem Zeitraum
+- Wartungsfenster oder Störungsinfos
+- Marketing-Aktionen wie zeitlich begrenzte Rabattcodes
+
+### Einrichtung
+
+1. Beim Status-Update das Feld **Anzeigebereich** auf "Nur im Frontend" oder "Backend und Frontend" stellen
+2. Optional: **Anzeigen bis** setzen – das Update läuft automatisch aus, sobald dieses Datum überschritten ist. Leer lassen für ein dauerhaftes Update
+3. **Typ** wählen (Neutral, Info, Erfolg, Warnung, Kritisch, Aktion) – steuert die Standard-Farben
+4. Optional: **Kann geschlossen werden** aktivieren, damit Besucher:innen den Hinweis schließen können (Auswahl wird per `localStorage` gemerkt, bis das Update erneut bearbeitet wird)
+5. Optional: **Auf Seiten einschränken** – leer lassen, um den Hinweis auf allen Seiten anzuzeigen. Bei Auswahl einer Seite wird das Update auf dieser Seite **und allen Unterseiten** angezeigt
+6. Im Seitenlayout das **Frontend-Modul „Status-Updates"** platzieren (z.B. im Header oder als Banner-Slot)
+
+### Auswahllogik
+
+Im Frontend wird ein Update angezeigt, wenn:
+
+- veröffentlicht und nicht als abgeschlossen markiert
+- Scope ist "Frontend" oder "Backend und Frontend"
+- Heute liegt im Zeitraum **Datum** – **Anzeigen bis** (jeweils inkl.) bzw. ab **Datum**, falls kein Anzeigen-bis gesetzt ist
+- Aktuelle Seite (oder eine ihrer Elternseiten) gehört zur Auswahl – oder die Auswahl ist leer
+
+Mehrere aktive Updates werden nach Typ-Priorität sortiert: Kritisch > Warnung > Info > Erfolg > Aktion > Neutral.
+
+### Styling
+
+Die Default-Styles liegen in `public/css/frontend_status_updates.css`. CSS und Dismiss-JS werden **nur dann geladen, wenn das Modul auf der Seite tatsächlich aktive Updates rendert** – verwaltet über `{% block style %}` / `{% block script %}` im Twig-Template (`add 'key' to stylesheets/body`-Pattern wie beim Contao-Swiper). Das JS lädt zusätzlich nur, wenn mindestens ein Update als „schließbar" markiert ist.
+
+Override im Theme-SCSS in einer separaten Override-Datei (LASR/SOLO-Konvention) – nicht direkt im Theme-SCSS.
+
+Die Twig-Templates lassen sich überschreiben:
+
+- `frontend_module/status_updates.html.twig` (Modul-Wrapper inkl. Asset-Blöcke)
+
+Das Template stellt benannte Override-Blöcke bereit, sodass ein Theme nur den relevanten Teil austauschen muss, ohne das gesamte Template zu kopieren:
+
+| Block | Zweck |
+| --- | --- |
+| `status_updates_styles` | Stylesheet-Einbindung — Bundle-CSS unterdrücken oder eigenes laden |
+| `status_updates_scripts` | Script-Einbindung — Dismiss-JS ersetzen oder weglassen |
+| `status_updates_noscript` | `<noscript>`-Fallback für dismissible Items |
+| `status_updates_items` | Wrapper-Div + Items-Schleife — komplettes Markup ersetzen |
+| `status_updates_item` | Markup eines einzelnen `<article>` |
+| `status_updates_close` | Schließen-Button |
+
+Beispiel: Bundle-CSS unterdrücken und eigenes Stylesheet aus dem Theme laden:
+
+```twig
+{% extends "@Contao/frontend_module/status_updates.html.twig" %}
+
+{% block status_updates_styles %}
+    {% add 'theme_status_updates_css' to stylesheets %}
+        <link rel="stylesheet" href="{{ asset('files/theme/css/status-updates.css') }}">
+    {% endadd %}
+{% endblock %}
+```
 
 ## Anforderungen
 

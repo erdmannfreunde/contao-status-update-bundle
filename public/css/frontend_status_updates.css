@@ -1,0 +1,158 @@
+/**
+ * Frontend styles for the Status-Updates module.
+ * All visual values are exposed as CSS custom properties on .status-updates
+ * so a theme can override them by re-declaring the variables in its own CSS.
+ */
+
+.status-updates {
+  /* Layout */
+  --status-update-gap: 12px;
+  --status-update-margin-bottom: 24px;
+  --status-update-inner-gap: 12px;
+  --status-update-padding: 16px 48px 16px 20px;
+  --status-update-border-width: 4px;
+  --status-update-border-radius: 4px;
+
+  /* Typography */
+  --status-update-title-font-size: 1.05em;
+  --status-update-title-font-weight: 700;
+  --status-update-title-margin: 0 0 6px;
+  --status-update-body-font-size: 0.95em;
+  --status-update-body-line-height: 1.5;
+
+  /* Close button */
+  --status-update-close-size: 32px;
+  --status-update-close-font-size: 24px;
+  --status-update-close-top: 8px;
+  --status-update-close-right: 8px;
+  --status-update-close-opacity: 0.6;
+  --status-update-close-opacity-hover: 1;
+  --status-update-close-hover-bg: rgba(0, 0, 0, 0.06);
+  --status-update-close-transition: opacity 0.15s, background-color 0.15s;
+
+  /* Info (default) */
+  --status-update-info-border: #3aa0d5;
+  --status-update-info-bg: #f5f9fc;
+  --status-update-info-text: #1a2332;
+
+  /* Warning */
+  --status-update-warning-border: #fdb913;
+  --status-update-warning-bg: #fffaf0;
+  --status-update-warning-text: #5a4400;
+
+  /* Success */
+  --status-update-success-border: #6cc24a;
+  --status-update-success-bg: #f1f8f0;
+  --status-update-success-text: #2c4a1a;
+
+  /* Critical */
+  --status-update-critical-border: #c1313d;
+  --status-update-critical-bg: #fdecee;
+  --status-update-critical-text: #6a1a23;
+
+  /* Neutral (no left border) */
+  --status-update-neutral-bg: #f4f4f4;
+  --status-update-neutral-text: #2a2a2a;
+
+  /* Promo */
+  --status-update-promo-border: #c049b2;
+  --status-update-promo-bg: #faf3f9;
+  --status-update-promo-text: #4a1c44;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--status-update-gap);
+  margin: 0 0 var(--status-update-margin-bottom);
+}
+
+.status-update {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--status-update-inner-gap);
+  padding: var(--status-update-padding);
+  border-left: var(--status-update-border-width) solid
+    var(--status-update-info-border);
+  background-color: var(--status-update-info-bg);
+  border-radius: var(--status-update-border-radius);
+  color: var(--status-update-info-text);
+}
+
+.status-update--warning {
+  border-left-color: var(--status-update-warning-border);
+  background-color: var(--status-update-warning-bg);
+  color: var(--status-update-warning-text);
+}
+
+.status-update--success {
+  border-left-color: var(--status-update-success-border);
+  background-color: var(--status-update-success-bg);
+  color: var(--status-update-success-text);
+}
+
+.status-update--critical {
+  border-left-color: var(--status-update-critical-border);
+  background-color: var(--status-update-critical-bg);
+  color: var(--status-update-critical-text);
+}
+
+.status-update--neutral {
+  border-left: 0;
+  background-color: var(--status-update-neutral-bg);
+  color: var(--status-update-neutral-text);
+}
+
+.status-update--promo {
+  border-left-color: var(--status-update-promo-border);
+  background-color: var(--status-update-promo-bg);
+  color: var(--status-update-promo-text);
+}
+
+.status-update__inner {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.status-update__title {
+  margin: var(--status-update-title-margin);
+  font-size: var(--status-update-title-font-size);
+  font-weight: var(--status-update-title-font-weight);
+}
+
+.status-update__body {
+  font-size: var(--status-update-body-font-size);
+  line-height: var(--status-update-body-line-height);
+}
+
+.status-update__body p:last-child {
+  margin-bottom: 0;
+}
+
+.status-update__close {
+  position: absolute;
+  top: var(--status-update-close-top);
+  right: var(--status-update-close-right);
+  width: var(--status-update-close-size);
+  height: var(--status-update-close-size);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: var(--status-update-close-font-size);
+  line-height: 1;
+  color: currentColor;
+  opacity: var(--status-update-close-opacity);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: var(--status-update-close-transition);
+}
+
+.status-update__close:hover,
+.status-update__close:focus-visible {
+  opacity: var(--status-update-close-opacity-hover);
+  background-color: var(--status-update-close-hover-bg);
+  outline: none;
+}
+
+.status-update[hidden] {
+  display: none !important;
+}

@@ -27,10 +27,10 @@
       </trans-unit>
 
       <trans-unit id="tl_status_update.date.0">
-        <source>Event date</source>
+        <source>Date</source>
       </trans-unit>
       <trans-unit id="tl_status_update.date.1">
-        <source>Select the date for this status update.</source>
+        <source>Backend: the event day this update refers to. Frontend: the day from which the message starts to appear.</source>
       </trans-unit>
 
       <trans-unit id="tl_status_update.show_days_before.0">
@@ -96,6 +96,78 @@
       </trans-unit>
       <trans-unit id="tl_status_update.show_days_after_options.7_days">
         <source>7 days after</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.scope_legend">
+        <source>Scope</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.scope.0">
+        <source>Display scope</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.scope.1">
+        <source>Where should this status update be visible?</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.scope_options.backend">
+        <source>Backend dashboard only</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.scope_options.frontend">
+        <source>Frontend only</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.scope_options.both">
+        <source>Backend and frontend</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.date_end.0">
+        <source>Display until</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.date_end.1">
+        <source>Until when should the message be visible in the frontend? Leave empty for permanent display.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.date_end_before_start">
+        <source>The end date must not be before the start date.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.type.0">
+        <source>Type</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type.1">
+        <source>Visual style of the frontend message.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.type_options.neutral">
+        <source>Neutral (no border)</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.info">
+        <source>Info (blue)</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.success">
+        <source>Success (green)</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.warning">
+        <source>Warning (yellow)</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.critical">
+        <source>Critical (red)</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.promo">
+        <source>Promotion (highlighted)</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.dismissible.0">
+        <source>Can be dismissed</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.dismissible.1">
+        <source>Allow visitors to close the message. The dismissal is remembered per browser until the message is edited.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.frontend_pages.0">
+        <source>Restrict to pages</source>
+      </trans-unit>
+      <trans-unit id="tl_status_update.frontend_pages.1">
+        <source>Show only on the selected pages and all of their subpages. Leave empty to show on all pages.</source>
       </trans-unit>
     </body>
   </file>

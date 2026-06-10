@@ -34,12 +34,12 @@
       </trans-unit>
 
       <trans-unit id="tl_status_update.date.0">
-        <source>Event date</source>
+        <source>Date</source>
         <target>Datum</target>
       </trans-unit>
       <trans-unit id="tl_status_update.date.1">
-        <source>Select the date for this status update.</source>
-        <target>Wählen Sie das Datum für dieses Status-Update.</target>
+        <source>Backend: the event day this update refers to. Frontend: the day from which the message starts to appear.</source>
+        <target>Backend: der Tag, auf den sich das Update bezieht. Frontend: der Tag, ab dem der Hinweis angezeigt wird.</target>
       </trans-unit>
 
       <trans-unit id="tl_status_update.show_days_before.0">
@@ -124,6 +124,99 @@
       <trans-unit id="tl_status_update.show_days_after_options.7_days">
         <source>7 days after</source>
         <target>7 Tage danach</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.scope_legend">
+        <source>Scope</source>
+        <target>Wo wird angezeigt</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.scope.0">
+        <source>Display scope</source>
+        <target>Anzeigebereich</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.scope.1">
+        <source>Where should this status update be visible?</source>
+        <target>Wo soll dieses Status-Update sichtbar sein?</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.scope_options.backend">
+        <source>Backend dashboard only</source>
+        <target>Nur im Backend-Dashboard</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.scope_options.frontend">
+        <source>Frontend only</source>
+        <target>Nur im Frontend</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.scope_options.both">
+        <source>Backend and frontend</source>
+        <target>Backend und Frontend</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.date_end.0">
+        <source>Display until</source>
+        <target>Anzeigen bis</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.date_end.1">
+        <source>Until when should the message be visible in the frontend? Leave empty for permanent display.</source>
+        <target>Bis wann soll der Hinweis im Frontend angezeigt werden? Leer lassen für dauerhafte Anzeige.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.date_end_before_start">
+        <source>The end date must not be before the start date.</source>
+        <target>Das Enddatum darf nicht vor dem Startdatum liegen.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.type.0">
+        <source>Type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type.1">
+        <source>Visual style of the frontend message.</source>
+        <target>Visueller Stil des Frontend-Hinweises.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.type_options.neutral">
+        <source>Neutral (no border)</source>
+        <target>Neutral (ohne Rahmen)</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.info">
+        <source>Info (blue)</source>
+        <target>Info (blau)</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.success">
+        <source>Success (green)</source>
+        <target>Erfolg (grün)</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.warning">
+        <source>Warning (yellow)</source>
+        <target>Warnung (gelb)</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.critical">
+        <source>Critical (red)</source>
+        <target>Kritisch (rot)</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.type_options.promo">
+        <source>Promotion (highlighted)</source>
+        <target>Aktion (hervorgehoben)</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.dismissible.0">
+        <source>Can be dismissed</source>
+        <target>Kann geschlossen werden</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.dismissible.1">
+        <source>Allow visitors to close the message. The dismissal is remembered per browser until the message is edited.</source>
+        <target>Besucher:innen dürfen den Hinweis schließen. Die Auswahl bleibt pro Browser gemerkt, bis der Hinweis erneut bearbeitet wird.</target>
+      </trans-unit>
+
+      <trans-unit id="tl_status_update.frontend_pages.0">
+        <source>Restrict to pages</source>
+        <target>Auf Seiten einschränken</target>
+      </trans-unit>
+      <trans-unit id="tl_status_update.frontend_pages.1">
+        <source>Show only on the selected pages and all of their subpages. Leave empty to show on all pages.</source>
+        <target>Nur auf den ausgewählten Seiten und allen Unterseiten anzeigen. Leer lassen, um auf allen Seiten anzuzeigen.</target>
       </trans-unit>
     </body>
   </file>
