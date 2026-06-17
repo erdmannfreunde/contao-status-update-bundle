@@ -1,0 +1,91 @@
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+{% use "@Contao/component/_stylesheet.html.twig" %}
+
+{#
+    Override-Punkte für Theme-Templates:
+      - `status_updates_styles`    : Stylesheet(s) registrieren
+      - `status_updates_scripts`   : Script(s) registrieren
+      - `status_updates_noscript`  : <noscript>-Fallback
+      - `status_updates_items`     : Wrapper-Div + Items-Loop
+      - `status_updates_item`      : einzelnes <article>-Markup
+      - `status_updates_close`     : Schließen-Button
+#}
+
+{% block content %}
+    {% if items is not empty %}
+        {{ block('status_updates_styles') }}
+        {{ block('status_updates_scripts') }}
+        {{ block('status_updates_noscript') }}
+        {{ block('status_updates_items') }}
+    {% endif %}
+{% endblock %}
+
+{% block status_updates_styles %}
+    {% add 'ef_status_updates_css' to stylesheets %}
+        {% with {file: asset('bundles/erdmannfreundecontaostatusupdate/css/frontend_status_updates.css')} %}
+            {{ block('stylesheet_component') }}
+        {% endwith %}
+    {% endadd %}
+{% endblock %}
+
+{% block status_updates_scripts %}
+    {% if items|filter(item => item.dismissible)|length > 0 %}
+        {% add 'ef_status_updates_js' to body %}
+            {% set script_attributes = attrs()
+                .setIfExists('nonce', csp_nonce('script-src'))
+            %}
+            <script{{ script_attributes }} src="{{ asset('bundles/erdmannfreundecontaostatusupdate/js/frontend_status_updates.js') }}" defer></script>
+        {% endadd %}
+    {% endif %}
+{% endblock %}
+
+{% block status_updates_noscript %}
+    {% if items|filter(item => item.dismissible)|length > 0 %}
+        <noscript>
+            <style>
+                .status-update[data-dismissible="1"][hidden] { display: flex !important; }
+                .status-update__close { display: none; }
+            </style>
+        </noscript>
+    {% endif %}
+{% endblock %}
+
+{% block status_updates_items %}
+    <div class="status-updates" data-status-updates>
+        {% for item in items %}
+            {{ block('status_updates_item') }}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block status_updates_item %}
+    {% set is_critical = item.type == 'critical' %}
+    <article
+        class="{{ item.cssClass }}"
+        role="{{ is_critical ? 'alert' : 'status' }}"
+        aria-live="{{ is_critical ? 'assertive' : 'polite' }}"
+        data-id="{{ item.id }}"
+        data-tstamp="{{ item.tstamp }}"
+        {% if item.dismissible %}data-dismissible="1" hidden{% endif %}
+    >
+        <div class="status-update__inner">
+            {% if item.title %}
+                <div class="status-update__title">{{ item.title }}</div>
+            {% endif %}
+            {% if item.description %}
+                <div class="status-update__body">{{ item.description|raw }}</div>
+            {% endif %}
+        </div>
+        {% if item.dismissible %}
+            {{ block('status_updates_close') }}
+        {% endif %}
+    </article>
+{% endblock %}
+
+{% block status_updates_close %}
+    <button
+        type="button"
+        class="status-update__close"
+        aria-label="{{ 'MSC.close'|trans({}, 'contao_default') }}"
+    >&times;</button>
+{% endblock %}

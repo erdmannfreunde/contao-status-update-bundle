@@ -8,6 +8,13 @@
       <trans-unit id="MOD.status_updates.1">
         <source>Manage status updates for backend dashboard</source>
       </trans-unit>
+
+      <trans-unit id="FMD.status_updates.0">
+        <source>Status Updates</source>
+      </trans-unit>
+      <trans-unit id="FMD.status_updates.1">
+        <source>Renders active frontend status updates (e.g. vacation notices, promotions).</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

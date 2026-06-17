@@ -35,7 +35,7 @@ class StatusUpdateSystemMessageListener
 
         // Query status updates with visibility calculation
         $updates = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_status_update WHERE published = 1 ORDER BY date ASC'
+            "SELECT * FROM tl_status_update WHERE published = 1 AND scope IN ('backend', 'both') ORDER BY date ASC"
         );
 
         $messages = [];

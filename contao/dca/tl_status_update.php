@@ -80,7 +80,14 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{title_legend},title,description;{date_legend},date,show_days_before,show_days_after;{publish_legend},published,completed',
+        '__selector__' => ['scope'],
+        'default' => '{title_legend},title,description;{date_legend},date;{scope_legend},scope;{publish_legend},published,completed',
+    ],
+
+    'subpalettes' => [
+        'scope_backend' => 'show_days_before,show_days_after',
+        'scope_frontend' => 'date_end,type,dismissible,frontend_pages',
+        'scope_both' => 'show_days_before,show_days_after,date_end,type,dismissible,frontend_pages',
     ],
 
     // Fields
@@ -120,6 +127,50 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'inputType' => 'text',
             'eval' => ['rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql' => "int(10) unsigned NOT NULL default 0",
+        ],
+        'date_end' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_status_update']['date_end'],
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => ['rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'save_callback' => [['tl_status_update', 'validateDateEnd']],
+            'sql' => "int(10) unsigned NULL",
+        ],
+        'scope' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_status_update']['scope'],
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'select',
+            'options' => ['backend', 'frontend', 'both'],
+            'reference' => &$GLOBALS['TL_LANG']['tl_status_update']['scope_options'],
+            'eval' => ['mandatory' => true, 'submitOnChange' => true, 'tl_class' => 'w50'],
+            'sql' => "varchar(16) NOT NULL default 'backend'",
+        ],
+        'type' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_status_update']['type'],
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'select',
+            'options' => ['neutral', 'info', 'success', 'warning', 'critical', 'promo'],
+            'reference' => &$GLOBALS['TL_LANG']['tl_status_update']['type_options'],
+            'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
+            'sql' => "varchar(16) NOT NULL default 'info'",
+        ],
+        'dismissible' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_status_update']['dismissible'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50 m12'],
+            'sql' => ['type' => 'boolean', 'default' => false],
+        ],
+        'frontend_pages' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_status_update']['frontend_pages'],
+            'exclude' => true,
+            'inputType' => 'pageTree',
+            'foreignKey' => 'tl_page.title',
+            'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
+            'sql' => "blob NULL",
+            'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
         ],
         'show_days_before' => [
             'label' => &$GLOBALS['TL_LANG']['tl_status_update']['show_days_before'],
@@ -190,12 +241,39 @@ class tl_status_update extends Backend
             $colorClass = 'style="color: #f90;"'; // Within 3 days - orange
         }
 
+        $scopeBadge = match ($row['scope'] ?? 'backend') {
+            'frontend' => '<span class="tl_gray" style="margin-right:6px;">[FE]</span>',
+            'both' => '<span class="tl_gray" style="margin-right:6px;">[BE+FE]</span>',
+            default => '<span class="tl_gray" style="margin-right:6px;">[BE]</span>',
+        };
+
         return sprintf(
-            '%s <span class="label-info" %s>[%s]</span>',
+            '%s%s <span class="label-info" %s>[%s]</span>',
+            $scopeBadge,
             $row['title'],
             $colorClass,
             $datum
         );
+    }
+
+    /**
+     * Validate date_end: must not be before `date` if both are set.
+     * The field itself is optional — leaving it empty means "no expiry".
+     */
+    public function validateDateEnd(mixed $value, DataContainer $dc): mixed
+    {
+        if (empty($value)) {
+            return $value;
+        }
+
+        $start = (int) ($dc->activeRecord->date ?? 0);
+        if ($start > 0 && (int) $value < $start) {
+            throw new \RuntimeException(
+                $GLOBALS['TL_LANG']['tl_status_update']['date_end_before_start'] ?? 'The end date must not be before the start date.'
+            );
+        }
+
+        return $value;
     }
 
     /**
