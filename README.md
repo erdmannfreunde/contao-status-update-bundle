@@ -42,6 +42,7 @@ composer require erdmannfreunde/contao-status-update-bundle
   - Nur am Ereignistag (Standard)
   - 1 Tag danach
   - 7 Tage danach
+  - 30 Tage danach (z.B. für einen vereinbarten Content Freeze)
 - **Veröffentlicht**: Aktivieren, um im Dashboard sichtbar zu machen
 - **Abgeschlossen**: Markiert das Update als erledigt. Im Dashboard wird es dann grün dargestellt und erhält ein dezentes Häkchen-Icon im Hintergrund. Lässt sich auch direkt aus der Übersicht über das Checkbox-Icon umschalten.
 

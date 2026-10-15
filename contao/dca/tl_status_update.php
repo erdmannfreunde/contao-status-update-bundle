@@ -187,7 +187,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => ['only_on_event_day', '1_day', '7_days'],
+            'options' => ['only_on_event_day', '1_day', '7_days', '30_days'],
             'reference' => &$GLOBALS['TL_LANG']['tl_status_update']['show_days_after_options'],
             'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(32) NOT NULL default 'only_on_event_day'",

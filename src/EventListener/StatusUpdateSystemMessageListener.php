@@ -82,6 +82,7 @@ class StatusUpdateSystemMessageListener
             'only_on_event_day' => false, // Already past, don't show
             '1_day' => $daysAgo <= 1,
             '7_days' => $daysAgo <= 7,
+            '30_days' => $daysAgo <= 30,
             default => false,
         };
     }

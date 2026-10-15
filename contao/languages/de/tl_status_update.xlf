@@ -125,6 +125,10 @@
         <source>7 days after</source>
         <target>7 Tage danach</target>
       </trans-unit>
+      <trans-unit id="tl_status_update.show_days_after_options.30_days">
+        <source>30 days after</source>
+        <target>30 Tage danach</target>
+      </trans-unit>
 
       <trans-unit id="tl_status_update.scope_legend">
         <source>Scope</source>
