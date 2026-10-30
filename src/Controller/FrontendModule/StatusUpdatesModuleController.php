@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace ErdmannFreunde\ContaoStatusUpdateBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
@@ -28,9 +36,8 @@ class StatusUpdatesModuleController extends AbstractFrontendModuleController
      */
     private const TYPE_PRIORITY = ['critical', 'warning', 'info', 'success', 'promo', 'neutral'];
 
-    public function __construct(
-        private readonly Connection $connection,
-    ) {
+    public function __construct(private readonly Connection $connection)
+    {
     }
 
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
@@ -38,7 +45,7 @@ class StatusUpdatesModuleController extends AbstractFrontendModuleController
         $pageTrail = $this->getCurrentPageTrail($request);
         $now = strtotime(date('Y-m-d 00:00:00'));
 
-        $typePriority = "'" . implode("','", self::TYPE_PRIORITY) . "'";
+        $typePriority = "'".implode("','", self::TYPE_PRIORITY)."'";
 
         $rows = $this->connection->fetchAllAssociative(
             "SELECT * FROM tl_status_update
@@ -48,10 +55,11 @@ class StatusUpdatesModuleController extends AbstractFrontendModuleController
                AND date <= :now
                AND (date_end IS NULL OR date_end >= :now)
              ORDER BY FIELD(type, $typePriority), date ASC",
-            ['now' => $now]
+            ['now' => $now],
         );
 
         $items = [];
+
         foreach ($rows as $row) {
             if (!$this->matchesPage($row, $pageTrail)) {
                 continue;
@@ -68,11 +76,11 @@ class StatusUpdatesModuleController extends AbstractFrontendModuleController
                 'dismissible' => !empty($row['dismissible']),
                 'date' => (int) $row['date'],
                 'date_end' => (int) $row['date_end'],
-                'cssClass' => 'status-update status-update--' . $type,
+                'cssClass' => 'status-update status-update--'.$type,
             ];
         }
 
-        if ($items === []) {
+        if ([] === $items) {
             return new Response('');
         }
 
@@ -95,7 +103,7 @@ class StatusUpdatesModuleController extends AbstractFrontendModuleController
         $pageModel->loadDetails();
         $trail = array_map('intval', $pageModel->trail ?: []);
 
-        if ($trail === [] || !\in_array((int) $pageModel->id, $trail, true)) {
+        if ([] === $trail || !\in_array((int) $pageModel->id, $trail, true)) {
             $trail[] = (int) $pageModel->id;
         }
 
@@ -110,14 +118,14 @@ class StatusUpdatesModuleController extends AbstractFrontendModuleController
     {
         $allowedPages = array_filter(array_map('intval', StringUtil::deserialize($row['frontend_pages'] ?? null, true)));
 
-        if ($allowedPages === []) {
+        if ([] === $allowedPages) {
             return true;
         }
 
-        if ($pageTrail === []) {
+        if ([] === $pageTrail) {
             return false;
         }
 
-        return array_intersect($pageTrail, $allowedPages) !== [];
+        return [] !== array_intersect($pageTrail, $allowedPages);
     }
 }

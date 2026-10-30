@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 use Contao\System;
 use ErdmannFreunde\ContaoStatusUpdateBundle\Model\StatusUpdateModel;
 use ErdmannFreunde\ContaoStatusUpdateBundle\Model\StatusUpdateSettingsModel;

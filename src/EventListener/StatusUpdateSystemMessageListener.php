@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace ErdmannFreunde\ContaoStatusUpdateBundle\EventListener;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
@@ -35,7 +43,7 @@ class StatusUpdateSystemMessageListener
 
         // Query status updates with visibility calculation
         $updates = $this->connection->fetchAllAssociative(
-            "SELECT * FROM tl_status_update WHERE published = 1 AND scope IN ('backend', 'both') ORDER BY date ASC"
+            "SELECT * FROM tl_status_update WHERE published = 1 AND scope IN ('backend', 'both') ORDER BY date ASC",
         );
 
         $messages = [];
@@ -56,21 +64,17 @@ class StatusUpdateSystemMessageListener
     /**
      * Determine if a status update should be displayed based on visibility rules.
      */
-    private function shouldDisplayUpdate(
-        int $currentDate,
-        int $eventDate,
-        string $showDaysBefore,
-        string $showDaysAfter
-    ): bool {
+    private function shouldDisplayUpdate(int $currentDate, int $eventDate, string $showDaysBefore, string $showDaysAfter): bool
+    {
         $daysDiff = (int) (($eventDate - $currentDate) / 86400); // 86400 = seconds in a day
 
         // Event is in the future or today
         if ($daysDiff >= 0) {
-            return match($showDaysBefore) {
+            return match ($showDaysBefore) {
                 '7_days' => $daysDiff <= 7,
                 '10_days' => $daysDiff <= 10,
                 '30_days' => $daysDiff <= 30,
-                'only_on_event_day' => $daysDiff === 0,
+                'only_on_event_day' => 0 === $daysDiff,
                 default => false,
             };
         }
@@ -78,7 +82,7 @@ class StatusUpdateSystemMessageListener
         // Event is in the past
         $daysAgo = abs($daysDiff);
 
-        return match($showDaysAfter) {
+        return match ($showDaysAfter) {
             'only_on_event_day' => false, // Already past, don't show
             '1_day' => $daysAgo <= 1,
             '7_days' => $daysAgo <= 7,
@@ -106,25 +110,23 @@ class StatusUpdateSystemMessageListener
             $statusType = 'success'; // Completed - green
         } elseif ($daysDiff < 0) {
             $statusType = 'success'; // Past event - green
-        } elseif ($daysDiff === 0) {
+        } elseif (0 === $daysDiff) {
             $statusType = 'error'; // Today - red/important
         } elseif ($daysDiff <= 3) {
             $statusType = 'warning'; // Soon - yellow/warning
         }
 
-        $classes = 'system-message-status-update ' . $statusType;
+        $classes = 'system-message-status-update '.$statusType;
         if ($isCompleted) {
             $classes .= ' completed';
         }
 
-        $html = sprintf(
+        return \sprintf(
             '<div class="%s"><div class="system-message-status-update-title">%s: %s</div>%s</div>',
             $classes,
             $formattedDate,
             $title,
-            $description ? '<div class="system-message-status-update-content">' . $description . '</div>' : ''
+            $description ? '<div class="system-message-status-update-content">'.$description.'</div>' : '',
         );
-
-        return $html;
     }
 }

@@ -32,6 +32,7 @@
     "symfony/http-kernel": "^6.4 || ^7.0"
   },
   "require-dev": {
+    "contao/easy-coding-standard": "^6.0",
     "contao/manager-plugin": "^2.3"
   },
   "conflict": {
@@ -50,6 +51,10 @@
       "contao/dca/",
       "contao/languages/"
     ]
+  },
+  "scripts": {
+    "cs": "@php vendor/bin/ecs check --ansi",
+    "cs-fix": "@php vendor/bin/ecs check --fix --ansi"
   },
   "extra": {
     "contao-manager-plugin": "ErdmannFreunde\\ContaoStatusUpdateBundle\\ContaoManager\\Plugin"

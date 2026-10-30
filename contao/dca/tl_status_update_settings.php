@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 use Contao\Backend;
 use Contao\Controller;
 use Contao\DataContainer;
@@ -55,10 +65,10 @@ $GLOBALS['TL_DCA']['tl_status_update_settings'] = [
 
     'fields' => [
         'id' => [
-            'sql' => "int(10) unsigned NOT NULL auto_increment",
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'tstamp' => [
-            'sql' => "int(10) unsigned NOT NULL default 0",
+            'sql' => 'int(10) unsigned NOT NULL default 0',
         ],
         'enable_notifications' => [
             'label' => &$GLOBALS['TL_LANG']['tl_status_update_settings']['enable_notifications'],
@@ -80,7 +90,7 @@ $GLOBALS['TL_DCA']['tl_status_update_settings'] = [
             'inputType' => 'textarea',
             'eval' => ['rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
-            'sql' => "mediumtext NULL",
+            'sql' => 'mediumtext NULL',
         ],
         'notification_recipients' => [
             'label' => &$GLOBALS['TL_LANG']['tl_status_update_settings']['notification_recipients'],
@@ -88,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_status_update_settings'] = [
             'inputType' => 'checkbox',
             'foreignKey' => 'tl_user.name',
             'eval' => ['multiple' => true, 'tl_class' => 'clr'],
-            'sql' => "blob NULL",
+            'sql' => 'blob NULL',
             'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
         ],
     ],
@@ -99,17 +109,17 @@ class tl_status_update_settings extends Backend
     /**
      * Make sure exactly one settings row with id=1 exists.
      */
-    public function ensureSingletonRow(?DataContainer $dc = null): void
+    public function ensureSingletonRow(DataContainer|null $dc = null): void
     {
         $connection = System::getContainer()->get('database_connection');
-        \assert($connection instanceof Connection);
+        assert($connection instanceof Connection);
 
         $exists = (bool) $connection->fetchOne('SELECT id FROM tl_status_update_settings WHERE id = 1');
 
         if (!$exists) {
             $connection->executeStatement(
                 'INSERT IGNORE INTO tl_status_update_settings (id, tstamp) VALUES (1, ?)',
-                [time()]
+                [time()],
             );
         }
     }
@@ -117,7 +127,7 @@ class tl_status_update_settings extends Backend
     /**
      * Redirect the listing view directly to the edit form for id=1.
      */
-    public function redirectToEdit(?DataContainer $dc = null): void
+    public function redirectToEdit(DataContainer|null $dc = null): void
     {
         if (Input::get('act') || Input::get('key')) {
             return;

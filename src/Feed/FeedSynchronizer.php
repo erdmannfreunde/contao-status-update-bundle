@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace ErdmannFreunde\ContaoStatusUpdateBundle\Feed;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -21,14 +29,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * Mirrors the items of a subscribed status update feed into tl_status_update.
  *
- * The feed content ends up as HTML in the backend dashboard, so everything
- * coming from the remote side is treated as untrusted: strict validation,
- * an HTML allowlist, encoded insert tags and a fixed backend scope.
+ * The feed content ends up as HTML in the backend dashboard, so everything coming
+ * from the remote side is treated as untrusted: strict validation, an HTML
+ * allowlist, encoded insert tags and a fixed backend scope.
  */
 class FeedSynchronizer
 {
     private const FEED_VERSION = 1;
+
     private const MAX_BYTES = 524288;
+
     private const MAX_ITEMS = 50;
 
     /**
@@ -75,7 +85,7 @@ class FeedSynchronizer
         [$inserted, $updated, $completedIds, $deleted] = $this->connection->transactional(
             function () use ($items, $host, $sanitizer): array {
                 $existing = $this->connection->fetchAllAssociativeIndexed(
-                    "SELECT feed_uid, id, feed_updated, completed FROM tl_status_update WHERE feed_uid != ''"
+                    "SELECT feed_uid, id, feed_updated, completed FROM tl_status_update WHERE feed_uid != ''",
                 );
 
                 $inserted = $updated = 0;
@@ -96,8 +106,8 @@ class FeedSynchronizer
                         'feed_updated' => $item['updated'],
                     ];
 
-                    // Local fields (published, completed, notification_sent) are only set on insert.
-                    // An item that arrives already completed was never shown as open here, so no mail.
+                    // Local fields (published, completed, notification_sent) are only set on insert. An
+                    // item that arrives already completed was never shown as open here, so no mail.
                     if (!isset($existing[$uid])) {
                         $this->connection->insert('tl_status_update', $data + [
                             'feed_uid' => $uid,
@@ -123,20 +133,20 @@ class FeedSynchronizer
                     }
                 }
 
-                // Items leave the feed only after their display window has ended
-                // or when they were withdrawn, so a missing item can be removed.
+                // Items leave the feed only after their display window has ended or when they
+                // were withdrawn, so a missing item can be removed.
                 if ([] === $uids) {
                     $deleted = $this->connection->executeStatement("DELETE FROM tl_status_update WHERE feed_uid != ''");
                 } else {
                     $deleted = $this->connection->executeStatement(
                         "DELETE FROM tl_status_update WHERE feed_uid != '' AND feed_uid NOT IN (?)",
                         [$uids],
-                        [ArrayParameterType::STRING]
+                        [ArrayParameterType::STRING],
                     );
                 }
 
                 return [$inserted, $updated, $completedIds, (int) $deleted];
-            }
+            },
         );
 
         foreach ($completedIds as $id) {
@@ -149,8 +159,8 @@ class FeedSynchronizer
     }
 
     /**
-     * Same "exactly once" behaviour as completing an update in the backend
-     * (see SendCompletionMailListener).
+     * Same "exactly once" behaviour as completing an update in the backend (see
+     * SendCompletionMailListener).
      */
     private function sendCompletionMail(int $id): void
     {
@@ -174,17 +184,21 @@ class FeedSynchronizer
      */
     private function fetchItems(string $url): array
     {
-        $response = $this->httpClient->request('GET', $url, [
-            'timeout' => 5,
-            'max_duration' => 10,
-            'max_redirects' => 0,
-            'headers' => ['Accept' => 'application/json'],
-            'on_progress' => static function (int $downloaded): void {
-                if ($downloaded > self::MAX_BYTES) {
-                    throw new \UnexpectedValueException('Antwort ist größer als erlaubt.');
-                }
-            },
-        ]);
+        $response = $this->httpClient->request(
+            'GET',
+            $url,
+            [
+                'timeout' => 5,
+                'max_duration' => 10,
+                'max_redirects' => 0,
+                'headers' => ['Accept' => 'application/json'],
+                'on_progress' => static function (int $downloaded): void {
+                    if ($downloaded > self::MAX_BYTES) {
+                        throw new \UnexpectedValueException('Antwort ist größer als erlaubt.');
+                    }
+                },
+            ],
+        );
 
         if (200 !== $response->getStatusCode()) {
             throw new \UnexpectedValueException(\sprintf('Unerwarteter HTTP-Status %d.', $response->getStatusCode()));
