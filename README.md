@@ -13,6 +13,7 @@ Zeige wichtige Status-Updates wie anstehende Contao Updates im Contao Backend-Da
 - **Abgeschlossen-Status**: Markiere Updates als erledigt – das Dashboard zeigt sie dann grün mit einem Häkchen-Hintergrund-Icon
 - **E-Mail-Benachrichtigung**: Sende beim Abschließen eines Updates automatisch eine Mail an ausgewählte Backend-Benutzer (siehe Abschnitt "Benachrichtigungen")
 - **Frontend-Anzeige**: Zeige Status-Updates auch im Frontend an – z.B. Urlaubshinweise mit Zeitraum, Wartungsfenster oder Marketing-Aktionen mit Rabattcode (siehe Abschnitt "Frontend-Anzeige")
+- **Feed-Abo**: Übernimm Status-Updates automatisch aus einer zentralen Contao-Installation – z.B. Ankündigungen von Sicherheitsupdates für alle betreuten Websites (siehe Abschnitt "Feed-Abo")
 
 ## Installation
 
@@ -155,6 +156,45 @@ Beispiel: Bundle-CSS unterdrücken und eigenes Stylesheet aus dem Theme laden:
     {% endadd %}
 {% endblock %}
 ```
+
+## Feed-Abo
+
+Das Bundle kann einen Status-Update-Feed abonnieren, den eine andere Contao-Installation mit dem kostenpflichtigen [contao-status-update-feed-bundle](https://github.com/erdmannfreunde/contao-status-update-feed-bundle) bereitstellt. Das Abonnieren selbst ist kostenlos und benötigt keine Lizenz. So lassen sich Ankündigungen – etwa zu kritischen Sicherheitsupdates – einmal zentral pflegen und erscheinen automatisch im Backend-Dashboard aller abonnierenden Installationen.
+
+### Einrichtung
+
+Die Feed-URL wird in der `config/config.yaml` des Projekts hinterlegt und mit dem Projekt deployt:
+
+```yaml
+erdmannfreunde_contao_status_update:
+    feed_url: 'https://www.example.com/status-updates.json'
+```
+
+- Ohne `feed_url` ist das Abo aus.
+- Erlaubt sind nur `https://`-URLs, sonst bricht der Container-Build mit einer Fehlermeldung ab.
+- Nach dem Eintragen: Cache leeren und `contao:migrate` ausführen.
+
+### Verhalten
+
+- Ein Contao-Cronjob holt den Feed **stündlich** ab. Empfohlen ist ein System-Cron (`contao:cron` minütlich); ohne ihn greift der Web-Cron über Frontend-Aufrufe.
+- Manuell synchronisieren: `vendor/bin/contao-console contao:cron --force "ErdmannFreunde\ContaoStatusUpdateBundle\Cron\FeedSyncCron"`
+- Importierte Updates landen als normale Status-Updates in der Übersicht, gekennzeichnet mit `[Feed]` hinter dem Datum. Sie erscheinen **nur im Backend**, nie im Frontend.
+- Titel, Beschreibung, Datum und Vorlauf/Nachlauf kommen aus dem Feed und werden bei Änderungen überschrieben. Die Bearbeiten-Maske zeigt deshalb nur **Veröffentlicht** und **Abgeschlossen** – diese beiden Felder sind lokal und bleiben bei jeder Synchronisierung erhalten.
+- Markiert der Sender ein Update als **abgeschlossen**, wird es auch hier abgeschlossen und die Abschluss-Mail verschickt (siehe "Benachrichtigungen") – genau einmal, wie beim Abschließen im Backend. Empfänger sind nur die in den Einstellungen ausgewählten Backend-Benutzer, da beim Abruf niemand angemeldet ist. Ein lokal gesetztes "Abgeschlossen" nimmt der Feed nie zurück.
+- Kommt ein Update bereits abgeschlossen an, wird es ohne Mail angelegt – es war hier nie als offen sichtbar.
+- Läuft der Abruf über den CLI-Cron, stellt Contao die Abschluss-Mail in die Messenger-Warteschlange. Versendet wird sie vom Messenger-Worker bzw. beim nächsten Seitenaufruf.
+- Wird ein Update aus dem Feed entfernt (zurückgezogen oder 30 Tage nach dem Ereignis), verschwindet es auch hier.
+- Ausblenden statt löschen: Ein lokal gelöschtes Feed-Update wird beim nächsten Abruf neu angelegt, ein ausgeblendetes bleibt ausgeblendet.
+- Ist der Feed nicht erreichbar oder ungültig, bleibt alles unverändert; der Grund steht im System-Log.
+
+### Sicherheit
+
+Der Feed-Inhalt wird wie fremder Inhalt behandelt:
+
+- Abruf nur per HTTPS, ohne Weiterleitungen, mit Timeout und Größenlimit (512 KB, max. 50 Einträge)
+- Die Beschreibung läuft durch eine HTML-Allowlist (`p`, `br`, `strong`, `b`, `em`, `i`, `ul`, `ol`, `li`, `a`); Links nur `https`/`mailto`, Bilder, Skripte und Event-Handler werden entfernt
+- Insert-Tags im Feed werden nicht ausgeführt
+- Die Feed-URL lässt sich nur über die Projekt-Konfiguration ändern, nicht im Backend
 
 ## Anforderungen
 

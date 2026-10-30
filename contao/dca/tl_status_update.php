@@ -4,19 +4,27 @@ use Contao\Backend;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\Image;
+use Contao\Input;
+use Contao\Message;
 use Contao\StringUtil;
+use Contao\System;
+use Doctrine\DBAL\Connection;
 
 $GLOBALS['TL_DCA']['tl_status_update'] = [
     // Config
     'config' => [
         'dataContainer' => DC_Table::class,
         'markAsCopy' => 'title',
+        'onload_callback' => [
+            ['tl_status_update', 'adjustPaletteForFeedRecords'],
+        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
                 'tstamp' => 'index',
                 'date' => 'index',
                 'published' => 'index',
+                'feed_uid' => 'index',
             ],
         ],
     ],
@@ -213,6 +221,14 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
         'notification_sent' => [
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
+        'feed_uid' => [
+            'eval' => ['doNotCopy' => true],
+            'sql' => "varchar(128) NOT NULL default ''",
+        ],
+        'feed_updated' => [
+            'eval' => ['doNotCopy' => true],
+            'sql' => "int(10) unsigned NOT NULL default 0",
+        ],
     ],
 ];
 
@@ -247,13 +263,40 @@ class tl_status_update extends Backend
             default => '<span class="tl_gray" style="margin-right:6px;">[BE]</span>',
         };
 
+        $feedBadge = !empty($row['feed_uid']) ? '<span class="tl_gray" style="margin-left:6px;">[Feed]</span>' : '';
+
         return sprintf(
-            '%s%s <span class="label-info" %s>[%s]</span>',
+            '%s%s <span class="label-info" %s>[%s]</span>%s',
             $scopeBadge,
             $row['title'],
             $colorClass,
-            $datum
+            $datum,
+            $feedBadge
         );
+    }
+
+    /**
+     * Records imported from a subscribed feed are overwritten on every sync,
+     * so only the local fields (published, completed) stay editable.
+     */
+    public function adjustPaletteForFeedRecords(?DataContainer $dc = null): void
+    {
+        if (!$dc?->id || 'edit' !== Input::get('act')) {
+            return;
+        }
+
+        $connection = System::getContainer()->get('database_connection');
+        \assert($connection instanceof Connection);
+
+        $feedUid = (string) $connection->fetchOne('SELECT feed_uid FROM tl_status_update WHERE id = ?', [(int) $dc->id]);
+
+        if ('' === $feedUid) {
+            return;
+        }
+
+        $GLOBALS['TL_DCA']['tl_status_update']['palettes']['default'] = '{publish_legend},published,completed';
+
+        Message::addInfo($GLOBALS['TL_LANG']['tl_status_update']['feed_record_info'] ?? 'This status update comes from the subscribed feed and is updated automatically.');
     }
 
     /**

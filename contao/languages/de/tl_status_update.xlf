@@ -222,6 +222,10 @@
         <source>Show only on the selected pages and all of their subpages. Leave empty to show on all pages.</source>
         <target>Nur auf den ausgewählten Seiten und allen Unterseiten anzeigen. Leer lassen, um auf allen Seiten anzuzeigen.</target>
       </trans-unit>
+      <trans-unit id="tl_status_update.feed_record_info">
+        <source>This status update comes from the subscribed feed and is updated automatically. Only the publication and completion state can be changed locally.</source>
+        <target>Dieses Status-Update stammt aus dem abonnierten Feed und wird automatisch aktualisiert. Lokal lassen sich nur Veröffentlichung und Abschluss ändern.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
