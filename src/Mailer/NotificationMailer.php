@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace ErdmannFreunde\ContaoStatusUpdateBundle\Mailer;
 
 use Contao\BackendUser;
@@ -34,7 +42,7 @@ class NotificationMailer
     public function sendForUpdate(int $updateId): void
     {
         $settings = $this->connection->fetchAssociative(
-            'SELECT * FROM tl_status_update_settings WHERE id = 1'
+            'SELECT * FROM tl_status_update_settings WHERE id = 1',
         );
 
         if (!$settings || empty($settings['enable_notifications'])) {
@@ -43,7 +51,7 @@ class NotificationMailer
 
         $update = $this->connection->fetchAssociative(
             'SELECT * FROM tl_status_update WHERE id = ?',
-            [$updateId]
+            [$updateId],
         );
 
         if (!$update) {
@@ -52,7 +60,7 @@ class NotificationMailer
 
         $recipients = $this->collectRecipients($settings);
 
-        if ($recipients === []) {
+        if ([] === $recipients) {
             return;
         }
 
@@ -64,7 +72,8 @@ class NotificationMailer
             ->from($this->getFromAddress())
             ->subject($subject)
             ->html($body)
-            ->text(trim(strip_tags($body)));
+            ->text(trim(strip_tags($body)))
+        ;
 
         foreach ($recipients as $address) {
             $email->addTo($address);
@@ -80,7 +89,7 @@ class NotificationMailer
 
         $address = (string) $config->get('adminEmail');
 
-        return $address !== '' ? $address : 'no-reply@localhost';
+        return '' !== $address ? $address : 'no-reply@localhost';
     }
 
     /**
@@ -94,12 +103,13 @@ class NotificationMailer
 
         $userIds = array_filter(array_map('intval', StringUtil::deserialize($settings['notification_recipients'] ?? null, true)));
 
-        if ($userIds !== []) {
+        if ([] !== $userIds) {
             $rows = $this->connection->fetchFirstColumn(
                 'SELECT email FROM tl_user WHERE id IN (?)',
                 [$userIds],
-                [ArrayParameterType::INTEGER]
+                [ArrayParameterType::INTEGER],
             );
+
             foreach ($rows as $address) {
                 if (\is_string($address) && filter_var($address, FILTER_VALIDATE_EMAIL)) {
                     $emails[] = $address;
@@ -123,15 +133,14 @@ class NotificationMailer
      */
     private function renderMessage(array $settings, array $update): array
     {
-        // Parse insert tags on the admin-controlled template FIRST, so that
-        // any insert-tag-like content inside the status update (title /
-        // description) cannot be smuggled into the parser via token
-        // substitution.
+        // Parse insert tags on the admin-controlled template FIRST, so that any
+        // insert-tag-like content inside the status update (title / description) cannot
+        // be smuggled into the parser via token substitution.
         $subjectTemplate = $this->insertTagParser->replaceInline(
-            (string) ($settings['notification_subject'] ?? '')
+            (string) ($settings['notification_subject'] ?? ''),
         );
         $bodyTemplate = $this->insertTagParser->replace(
-            (string) ($settings['notification_body'] ?? '')
+            (string) ($settings['notification_body'] ?? ''),
         );
 
         $tokens = [
@@ -143,11 +152,11 @@ class NotificationMailer
         $subject = strtr($subjectTemplate, $tokens);
         $body = strtr($bodyTemplate, $tokens);
 
-        if ($subject === '') {
+        if ('' === $subject) {
             $subject = $this->translator->trans(
                 'tl_status_update_settings.notification_subject_default',
                 ['%title%' => $update['title'] ?? ''],
-                'contao_tl_status_update_settings'
+                'contao_tl_status_update_settings',
             );
         }
 

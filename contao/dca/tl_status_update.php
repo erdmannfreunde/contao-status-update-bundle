@@ -1,22 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 use Contao\Backend;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\Image;
+use Contao\Input;
+use Contao\Message;
 use Contao\StringUtil;
+use Contao\System;
+use Doctrine\DBAL\Connection;
 
 $GLOBALS['TL_DCA']['tl_status_update'] = [
     // Config
     'config' => [
         'dataContainer' => DC_Table::class,
         'markAsCopy' => 'title',
+        'onload_callback' => [
+            ['tl_status_update', 'adjustPaletteForFeedRecords'],
+        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
                 'tstamp' => 'index',
                 'date' => 'index',
                 'published' => 'index',
+                'feed_uid' => 'index',
             ],
         ],
     ],
@@ -58,7 +76,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'delete' => [
                 'href' => 'act=delete',
                 'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '') . '\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '').'\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
                 'href' => 'act=toggle&amp;field=published',
@@ -93,10 +111,10 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
     // Fields
     'fields' => [
         'id' => [
-            'sql' => "int(10) unsigned NOT NULL auto_increment",
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'tstamp' => [
-            'sql' => "int(10) unsigned NOT NULL default 0",
+            'sql' => 'int(10) unsigned NOT NULL default 0',
         ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_status_update']['title'],
@@ -115,7 +133,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'inputType' => 'textarea',
             'eval' => ['rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
-            'sql' => "mediumtext NULL",
+            'sql' => 'mediumtext NULL',
         ],
         'date' => [
             'label' => &$GLOBALS['TL_LANG']['tl_status_update']['date'],
@@ -126,7 +144,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'flag' => DataContainer::SORT_DAY_DESC,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql' => "int(10) unsigned NOT NULL default 0",
+            'sql' => 'int(10) unsigned NOT NULL default 0',
         ],
         'date_end' => [
             'label' => &$GLOBALS['TL_LANG']['tl_status_update']['date_end'],
@@ -134,7 +152,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'inputType' => 'text',
             'eval' => ['rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'save_callback' => [['tl_status_update', 'validateDateEnd']],
-            'sql' => "int(10) unsigned NULL",
+            'sql' => 'int(10) unsigned NULL',
         ],
         'scope' => [
             'label' => &$GLOBALS['TL_LANG']['tl_status_update']['scope'],
@@ -169,7 +187,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'inputType' => 'pageTree',
             'foreignKey' => 'tl_page.title',
             'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
-            'sql' => "blob NULL",
+            'sql' => 'blob NULL',
             'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
         ],
         'show_days_before' => [
@@ -213,6 +231,14 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
         'notification_sent' => [
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
+        'feed_uid' => [
+            'eval' => ['doNotCopy' => true],
+            'sql' => "varchar(128) NOT NULL default ''",
+        ],
+        'feed_updated' => [
+            'eval' => ['doNotCopy' => true],
+            'sql' => 'int(10) unsigned NOT NULL default 0',
+        ],
     ],
 ];
 
@@ -247,18 +273,45 @@ class tl_status_update extends Backend
             default => '<span class="tl_gray" style="margin-right:6px;">[BE]</span>',
         };
 
+        $feedBadge = !empty($row['feed_uid']) ? '<span class="tl_gray" style="margin-left:6px;">[Feed]</span>' : '';
+
         return sprintf(
-            '%s%s <span class="label-info" %s>[%s]</span>',
+            '%s%s <span class="label-info" %s>[%s]</span>%s',
             $scopeBadge,
             $row['title'],
             $colorClass,
-            $datum
+            $datum,
+            $feedBadge,
         );
     }
 
     /**
-     * Validate date_end: must not be before `date` if both are set.
-     * The field itself is optional — leaving it empty means "no expiry".
+     * Records imported from a subscribed feed are overwritten on every sync, so only
+     * the local fields (published, completed) stay editable.
+     */
+    public function adjustPaletteForFeedRecords(DataContainer|null $dc = null): void
+    {
+        if (!$dc?->id || 'edit' !== Input::get('act')) {
+            return;
+        }
+
+        $connection = System::getContainer()->get('database_connection');
+        assert($connection instanceof Connection);
+
+        $feedUid = (string) $connection->fetchOne('SELECT feed_uid FROM tl_status_update WHERE id = ?', [(int) $dc->id]);
+
+        if ('' === $feedUid) {
+            return;
+        }
+
+        $GLOBALS['TL_DCA']['tl_status_update']['palettes']['default'] = '{publish_legend},published,completed';
+
+        Message::addInfo($GLOBALS['TL_LANG']['tl_status_update']['feed_record_info'] ?? 'This status update comes from the subscribed feed and is updated automatically.');
+    }
+
+    /**
+     * Validate date_end: must not be before `date` if both are set. The field itself
+     * is optional — leaving it empty means "no expiry".
      */
     public function validateDateEnd(mixed $value, DataContainer $dc): mixed
     {
@@ -268,18 +321,16 @@ class tl_status_update extends Backend
 
         $start = (int) ($dc->activeRecord->date ?? 0);
         if ($start > 0 && (int) $value < $start) {
-            throw new \RuntimeException(
-                $GLOBALS['TL_LANG']['tl_status_update']['date_end_before_start'] ?? 'The end date must not be before the start date.'
-            );
+            throw new RuntimeException($GLOBALS['TL_LANG']['tl_status_update']['date_end_before_start'] ?? 'The end date must not be before the start date.');
         }
 
         return $value;
     }
 
     /**
-     * Render the "completed" toggle button with bundle asset icons.
-     * Mirrors the Contao core "featured" pattern so the button is rendered
-     * with a working <img> even when the icon comes from a bundle asset path.
+     * Render the "completed" toggle button with bundle asset icons. Mirrors the
+     * Contao core "featured" pattern so the button is rendered with a working <img>
+     * even when the icon comes from a bundle asset path.
      */
     public function toggleCompletedIcon(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
@@ -289,10 +340,10 @@ class tl_status_update extends Backend
 
         return sprintf(
             '<a href="%s" title="%s"%s>%s</a> ',
-            Backend::addToUrl($href . '&amp;id=' . $row['id']),
+            Backend::addToUrl($href.'&amp;id='.$row['id']),
             StringUtil::specialchars($title),
             $attributes,
-            Image::getHtml($current, $label, 'data-icon="' . $iconOn . '" data-icon-disabled="' . $iconOff . '" data-state="' . (!empty($row['completed']) ? 1 : 0) . '"')
+            Image::getHtml($current, $label, 'data-icon="'.$iconOn.'" data-icon-disabled="'.$iconOff.'" data-state="'.(!empty($row['completed']) ? 1 : 0).'"'),
         );
     }
 }

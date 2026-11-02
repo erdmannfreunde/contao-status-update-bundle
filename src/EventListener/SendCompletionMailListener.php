@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace ErdmannFreunde\ContaoStatusUpdateBundle\EventListener;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
@@ -10,8 +18,8 @@ use Doctrine\DBAL\Connection;
 use ErdmannFreunde\ContaoStatusUpdateBundle\Mailer\NotificationMailer;
 
 /**
- * Fires when the "completed" field is saved on tl_status_update.
- * Sends a notification mail only on transition 0 -> 1.
+ * Fires when the "completed" field is saved on tl_status_update. Sends a
+ * notification mail only on transition 0 -> 1.
  */
 #[AsCallback(table: 'tl_status_update', target: 'fields.completed.save')]
 class SendCompletionMailListener
@@ -30,10 +38,10 @@ class SendCompletionMailListener
 
         $alreadySent = (int) $this->connection->fetchOne(
             'SELECT notification_sent FROM tl_status_update WHERE id = ?',
-            [(int) $dc->id]
+            [(int) $dc->id],
         );
 
-        if ($alreadySent === 1) {
+        if (1 === $alreadySent) {
             return $value;
         }
 
@@ -41,7 +49,7 @@ class SendCompletionMailListener
 
         $this->connection->executeStatement(
             'UPDATE tl_status_update SET notification_sent = 1 WHERE id = ?',
-            [(int) $dc->id]
+            [(int) $dc->id],
         );
 
         return $value;

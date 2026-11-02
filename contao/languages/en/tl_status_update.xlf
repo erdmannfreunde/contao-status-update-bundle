@@ -172,6 +172,9 @@
       <trans-unit id="tl_status_update.frontend_pages.1">
         <source>Show only on the selected pages and all of their subpages. Leave empty to show on all pages.</source>
       </trans-unit>
+      <trans-unit id="tl_status_update.feed_record_info">
+        <source>This status update comes from the subscribed feed and is updated automatically. Only the publication and completion state can be changed locally.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

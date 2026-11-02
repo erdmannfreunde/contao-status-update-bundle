@@ -2,13 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of erdmannfreunde/contao-status-update-bundle.
+ *
+ * (c) Erdmann & Freunde <https://erdmann-freunde.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace ErdmannFreunde\ContaoStatusUpdateBundle\Model;
 
 use Contao\Model;
 use Contao\Model\Collection;
 
 /**
- * Status Update Model
+ * Status Update Model.
  *
  * @property int    $id
  * @property int    $tstamp
@@ -27,9 +35,8 @@ class StatusUpdateModel extends Model
      * Find all published status updates ordered by date DESC.
      *
      * @param array<string, mixed> $options
-     * @return Collection|StatusUpdateModel|null
      */
-    public static function findPublished(array $options = []): Collection|StatusUpdateModel|null
+    public static function findPublished(array $options = []): Collection|self|null
     {
         $t = static::$strTable;
         $columns = ["$t.published=?"];
@@ -45,11 +52,9 @@ class StatusUpdateModel extends Model
     /**
      * Find visible status updates for a given date.
      *
-     * @param int $currentDate
      * @param array<string, mixed> $options
-     * @return Collection|StatusUpdateModel|null
      */
-    public static function findVisibleForDate(int $currentDate, array $options = []): Collection|StatusUpdateModel|null
+    public static function findVisibleForDate(int $currentDate, array $options = []): Collection|self|null
     {
         $t = static::$strTable;
         $columns = ["$t.published=?"];
