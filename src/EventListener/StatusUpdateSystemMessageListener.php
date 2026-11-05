@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Displays status updates in the backend dashboard based on date visibility rules.
  */
-#[AsHook('getSystemMessages')]
+#[AsHook('getSystemMessages', priority: 100)]
 class StatusUpdateSystemMessageListener
 {
     public function __construct(
