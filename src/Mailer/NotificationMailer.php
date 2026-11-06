@@ -70,9 +70,9 @@ class NotificationMailer
 
         $email = (new Email())
             ->from($this->getFromAddress())
-            ->subject($subject)
+            ->subject(StringUtil::decodeEntities($subject))
             ->html($body)
-            ->text(trim(strip_tags($body)))
+            ->text(trim(StringUtil::decodeEntities(strip_tags($body))))
         ;
 
         foreach ($recipients as $address) {
