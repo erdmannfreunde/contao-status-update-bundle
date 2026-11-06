@@ -229,6 +229,7 @@ $GLOBALS['TL_DCA']['tl_status_update'] = [
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'notification_sent' => [
+            'eval' => ['doNotCopy' => true],
             'sql' => ['type' => 'boolean', 'default' => false],
         ],
         'feed_uid' => [
