@@ -27,7 +27,7 @@ $GLOBALS['TL_DCA']['tl_status_update_settings'] = [
         'notCreatable' => true,
         'onload_callback' => [
             ['tl_status_update_settings', 'ensureSingletonRow'],
-            ['tl_status_update_settings', 'redirectToEdit'],
+            ['tl_status_update_settings', 'redirectToStatusUpdates'],
         ],
         'sql' => [
             'keys' => [
@@ -125,14 +125,15 @@ class tl_status_update_settings extends Backend
     }
 
     /**
-     * Redirect the listing view directly to the edit form for id=1.
+     * The settings have no list view of their own. "Save and close" and the back
+     * button lead there, so send the user on to the status update list.
      */
-    public function redirectToEdit(DataContainer|null $dc = null): void
+    public function redirectToStatusUpdates(DataContainer|null $dc = null): void
     {
         if (Input::get('act') || Input::get('key')) {
             return;
         }
 
-        Controller::redirect(Backend::addToUrl('act=edit&id=1'));
+        Controller::redirect(System::getContainer()->get('router')->generate('contao_backend', ['do' => 'status_updates']));
     }
 }
